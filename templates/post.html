@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} | MATHhub{% endblock %}
+
+{% block content %}
+    <div class="post-detail">
+        {% if post.image %}
+        <div class="post-image-container detail">
+            <img src="{{ url_for('static', filename='img/' + post.image) }}" alt="{{ post.title }}" class="post-image">
+        </div>
+        {% endif %}
+        
+        <article class="post-content detail">
+            <h1 class="post-title">{{ post.title }}</h1>
+            <div class="post-meta">
+                <span class="meta-date">{{ post.date }}</span>
+                <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+            </div>
+            
+            <div class="post-body">
+                {{ post.content|safe }}
+            </div>
+        </article>
+    </div>
+{% endblock %}

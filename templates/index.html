@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for post in posts %}
+    <a href="{{ url_for('post', post_id=post.id) }}" class="post-link">
+        <div class="post">
+            {% if post.image %}
+            <div class="post-image-container">
+                <img src="{{ url_for('static', filename='img/' + post.image) }}" alt="{{ post.title }}" class="post-image" loading="lazy">
+            </div>
+            {% endif %}
+            <div class="post-content">
+                <h2 class="post-title">{{ post.title }}</h2>
+                <p class="post-excerpt">{{ post.excerpt }}</p>
+                <div class="post-meta">
+                    <span class="meta-date">{{ post.date }}</span>
+                    <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+{% endblock %}
