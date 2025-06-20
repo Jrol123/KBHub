@@ -126,6 +126,12 @@ def post(post_id):
     return render_template('post.html', post=post_item)
 
 
+@app.route('/user/<int:user_id>')
+def user_profile(user_id):
+    user = User.query.get_or_404(user_id)
+    return render_template('user_profile.html', user=user)
+
+
 if __name__ == '__main__':
     init_db() 
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True) #  host='0.0.0.0', port=5000

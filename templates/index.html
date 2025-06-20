@@ -1,24 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for post in posts %}
-    <a href="{{ url_for('post', post_id=post.id) }}" class="post-link">
-        <div class="post">
+    <div class="posts-container">
+        {% for post in posts %}
+        <div class="post-card">
+            <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
+            
             {% if post.image %}
-            <div class="post-image-container">
-                <img src="{{ url_for('static', filename='img/' + post.image) }}" alt="{{ post.title }}" class="post-image" loading="lazy">
+            <div class="post-image-wrapper">
+                <img src="{{ url_for('static', filename='img/' + post.image) }}" 
+                     alt="{{ post.title }}" 
+                     class="post-image"
+                     loading="lazy">
             </div>
             {% endif %}
-            <div class="post-content">
+            
+            <div class="post-content-wrapper">
                 <h2 class="post-title">{{ post.title }}</h2>
-                <p class="post-author">Автор: {{ post.author.name }}</p>
                 <p class="post-excerpt">{{ post.excerpt }}</p>
-                <div class="post-meta">
-                    <span class="meta-date">{{ post.date }}</span>
-                    <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+                
+                <div class="post-footer">
+                    <a href="{{ url_for('user_profile', user_id=post.author.id) }}" class="author-link">
+                        {{ post.author.name }}
+                    </a>
+                    <div class="post-meta-right">
+                        <span class="post-date">{{ post.date }}</span>
+                        <span class="reading-time">
+                            <i class="far fa-clock"></i> {{ post.reading_time }} мин
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-    </a>
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% endblock %}
