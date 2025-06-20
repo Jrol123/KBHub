@@ -132,6 +132,15 @@ def user_profile(user_id):
     return render_template('user_profile.html', user=user)
 
 
+@app.route('/register')
+def register():
+    return render_template('registration.html')
+
+
+
 if __name__ == '__main__':
     init_db() 
     app.run(debug=True) #  host='0.0.0.0', port=5000
+
+
+    
