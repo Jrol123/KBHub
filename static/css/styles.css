@@ -381,7 +381,8 @@ body {
 }
 
 .post-content-wrapper {
-    padding: 1.5rem;
+    padding: 1.5rem; 
+    padding-right: 30px;
 }
 
 .post-title {
@@ -394,6 +395,7 @@ body {
     color: #b0b0b0;
     margin: 0 0 1.5rem 0;
     line-height: 1.6;
+    padding-right: 10px;
 }
 
 .post-footer {
@@ -462,4 +464,48 @@ body {
         width: 100%;
         justify-content: space-between;
     }
+}
+@media (max-width: 768px) {
+    .post-content-wrapper {
+        padding: 20px;
+        padding-right: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .post-content-wrapper {
+        padding: 15px;
+        padding-right: 20px;
+    }
+    
+    .post-title,
+    .post-excerpt,
+    .post-footer {
+        padding-right: 5px;
+    }
+}
+
+.post-card {
+    background: #1e1e1e;
+    border-left: 4px solid #ff6d00;
+    border-radius: 0 8px 8px 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 100%;
+    position: relative; /* Для overlay */
+    margin-bottom: 30px;
+}
+
+.post-content-wrapper {
+    padding: 25px 30px 25px 25px; /* top right bottom left */
+}
+
+.post-link-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    text-decoration: none;
 }
