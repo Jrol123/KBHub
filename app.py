@@ -129,7 +129,8 @@ def post(post_id):
 @app.route('/user/<int:user_id>')
 def user_profile(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template('user_profile.html', user=user)
+    posts = Post.query.filter_by(author_id=user.id).all()
+    return render_template('user_profile.html', user=user, posts=posts)
 
 
 if __name__ == '__main__':
