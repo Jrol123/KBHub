@@ -13,6 +13,12 @@
         <article class="post-content detail">
             <h1 class="post-title">{{ post.title }}</h1>
             <div class="post-meta">
+                <span class="meta-author">
+                    {% if post.author.avatar %}
+                    <img src="{{ url_for('static', filename='img/' + post.author.avatar) }}" alt="{{ post.author.name }}" class="author-avatar">
+                    {% endif %}
+                    {{ post.author.name }}
+                </span>
                 <span class="meta-date">{{ post.date }}</span>
                 <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
             </div>

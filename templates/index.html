@@ -11,6 +11,7 @@
             {% endif %}
             <div class="post-content">
                 <h2 class="post-title">{{ post.title }}</h2>
+                <p class="post-author">Автор: {{ post.author.name }}</p>
                 <p class="post-excerpt">{{ post.excerpt }}</p>
                 <div class="post-meta">
                     <span class="meta-date">{{ post.date }}</span>

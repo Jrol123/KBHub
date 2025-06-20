@@ -10,14 +10,25 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
+    password = db.Column(db.String(50), nullable=False)
+    bio = db.Column(db.String(70))
+    avatar = db.Column(db.String(100))
+    posts = db.relationship('Post', backref='author', lazy=True)
+
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    excerpt = db.Column(db.Text, nullable=False)
+    title = db.Column(db.String(50), nullable=False)
+    excerpt = db.Column(db.String(150), nullable=False)
     content = db.Column(db.Text, nullable=False)
     image = db.Column(db.String(100))
     date = db.Column(db.String(50), nullable=False)
     reading_time = db.Column(db.Integer, nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
 def init_db():
@@ -26,35 +37,81 @@ def init_db():
     
     with app.app_context():
         db.create_all()
-        if not Post.query.first():
-            initial_posts = [
-                Post(
-                    title='Теория вероятностей',
-                    excerpt='Исследование основных концепций теории вероятностей...',
-                    content='<p>Полное содержание поста о теории вероятностей...</p>',
-                    image=None,
-                    date='12 мая 2023',
-                    reading_time=5
+        
+        # Создаем тестового пользователя если его нет
+        if not User.query.first():
+            test_users = [
+                User(
+                    name="Иван Иванов",
+                    email="ivan@example.com",
+                    password="secure123",
+                    bio="Профессор математики",
+                    avatar="avatar.png"
                 ),
-                Post(
-                    title='Линейная алгебра',
-                    excerpt='Основы линейной алгебры: от векторов и матриц...',
-                    content='<p>Полное содержание поста о линейной алгебре...</p>',
-                    image=None,
-                    date='8 мая 2023',
-                    reading_time=7
-                ),
-                Post(
-                    title='Дифференциальные уравнения',
-                    excerpt='Методы решения обыкновенных дифференциальных уравнений...',
-                    content='<p>Полное содержание поста о диффурах...</p>',
-                    image='post.jpg',
-                    date='3 мая 2023',
-                    reading_time=4
+                User(
+                    name="Мария Петрова",
+                    email="maria@example.com",
+                    password="secure456",
+                    bio="Исследователь в области алгебры",
+                    avatar="avatar.png"
                 )
             ]
-            db.session.bulk_save_objects(initial_posts)
+            db.session.bulk_save_objects(test_users)
             db.session.commit()
+            print("Created test users")
+
+        # Создаем тестовые посты если их нет
+        if not Post.query.first():
+            users = User.query.all()
+            if users:
+                test_posts = [
+                    Post(
+                        title='Теория вероятностей',
+                        excerpt='Основные концепции теории вероятностей...',
+                        content="""
+                        <p>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                        FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                        FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                        FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</p>
+                        """,
+                        image='post.jpg',
+                        date='15 июня 2023',
+                        reading_time=8,
+                        author_id=users[0].id
+                    ),
+                    Post(
+                        title='Линейная алгебра',
+                        excerpt="""
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        """,
+                        content='<p>Основные понятия линейной алгебры...</p>',
+                        image=None,
+                        date='10 июня 2023',
+                        reading_time=12,
+                        author_id=users[0].id
+                    ),
+                    Post(
+                        title='Дифференциальные уравнения',
+                        excerpt='Методы решения ДУ...',
+                        content='<p>Разбираем основные методы...</p>',
+                        image=None,
+                        date='5 июня 2023',
+                        reading_time=10,
+                        author_id=users[1].id
+                    )
+                ]
+                db.session.bulk_save_objects(test_posts)
+                db.session.commit()
+                print("Created test posts")
+            else:
+                print("No users found to assign posts to")
 
 
 @app.route('/')
@@ -71,4 +128,4 @@ def post(post_id):
 
 if __name__ == '__main__':
     init_db() 
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
