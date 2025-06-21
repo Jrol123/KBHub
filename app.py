@@ -143,7 +143,13 @@ def register():
 
             existing_email = User.query.filter_by(email=email).first()
             if existing_email:
-                return "Юзер с введенным емейлом уже существует, иди нахуй", 400
+                return render_template('registration.html', 
+                                     error="Email уже используется",
+                                     form_data={
+                                        'username': username,
+                                        'email': email,
+                                        'bio': bio
+                                    })
 
             filepath = None
 
