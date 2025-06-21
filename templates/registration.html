@@ -13,12 +13,14 @@
     <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="username">Имя</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" 
+                    value="{{ form_data.username if form_data else '' }}" required>
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" 
+                    value="{{ form_data.email if form_data else '' }}" required>
             </div>
             
             <div class="form-group">
@@ -28,7 +30,7 @@
             
             <div class="form-group">
                 <label for="bio">Инфа о вас</label>
-                <input type="text" id="bio" name="bio">
+                <input type="text" id="bio" name="bio" value="{{ form_data.bio if form_data else '' }}">
             </div>
 
             <div class="avatar-upload">
@@ -39,6 +41,12 @@
                 <label for="avatar">Выбрать аватар</label>
                 <div class="file-name" id="uploadStatus">Файл не выбран</div>
             </div>
+
+            {% if error %}
+                <div class="form-error">
+                    {{ error }}
+                </div>
+            {% endif %}
             
             <button type="submit" class="btn">Зарегистрироваться</button>
         </form>
