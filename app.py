@@ -1,7 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
-
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -132,10 +131,48 @@ def user_profile(user_id):
     return render_template('user_profile.html', user=user)
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        try:
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+            bio = request.form['bio']
+            avatar = request.files['avatar']
+
+            existing_email = User.query.filter_by(email=email).first()
+            if existing_email:
+                return "Юзер с введенным емейлом уже существует, иди нахуй", 400
+
+            filepath = None
+
+            if avatar:
+                if avatar.filename != '': filepath = f"upload/{avatar.filename}"
+
+            new_user = User(
+                name=username,
+                email=email,
+                password=password,
+                bio=bio,
+                avatar=filepath
+            )
+
+            db.session.add(new_user)
+            db.session.commit()
+
+            return redirect(url_for('login'))
+            
+        except Exception as e:
+            db.session.rollback()
+            return f"Error: {str(e)}", 500
+            
     return render_template('registration.html')
 
+
+@app.route('/login')
+def login():
+    return render_template('registration.html')
 
 
 if __name__ == '__main__':

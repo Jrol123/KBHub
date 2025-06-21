@@ -1,52 +1,94 @@
 {% extends "base.html" %}
 
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reg_styles.css') }}">
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block js %}{% endblock %}
+
 {% block content %}
 
-    <div class="post-content-wrapper">
+<div class="auth-card">
+    <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="username">Имя</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Инфа о вас</label>
+                <input type="text" id="bio" name="bio">
+            </div>
 
-        <form method="POST" action="{{ url_for('register') }}">
-
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="text" name="bio" placeholder="bio-weapon">
-            <input type="file" name="avatar">
-
-            <button type="submit">Register</button>
+            <div class="avatar-upload">
+                <div class="avatar-preview" id="avatarPreview">
+                    <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="Аватар по умолчанию">
+                </div>
+                <input type="file" id="avatar" name="avatar" accept="image/*">
+                <label for="avatar">Выбрать аватар</label>
+                <div class="file-name" id="uploadStatus">Файл не выбран</div>
+            </div>
+            
+            <button type="submit" class="btn">Зарегистрироваться</button>
         </form>
 
-    </div>
-    <!-- <div class="posts-container">
-        {% for post in posts %}
-        <div class="post-card">
-            <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
-            
-            {% if post.image %}
-            <div class="post-image-wrapper">
-                <img src="{{ url_for('static', filename='img/' + post.image) }}" 
-                     alt="{{ post.title }}" 
-                     class="post-image"
-                     loading="lazy">
-            </div>
-            {% endif %}
-            
-            <div class="post-content-wrapper">
-                <h2 class="post-title">{{ post.title }}</h2>
-                <p class="post-excerpt">{{ post.excerpt }}</p>
-                
-                <div class="post-footer">
-                    <a href="{{ url_for('user_profile', user_id=post.author.id) }}" class="author-link">
-                        {{ post.author.name }}
-                    </a>
-                    <div class="post-meta-right">
-                        <span class="post-date">{{ post.date }}</span>
-                        <span class="reading-time">
-                            <i class="far fa-clock"></i> {{ post.reading_time }} мин
-                        </span>
-                    </div>
-                </div>
-            </div>
+        
+        <div class="auth-links">
+            Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a>
         </div>
-        {% endfor %}
-    </div> -->
+    </form>
+</div>
+
+
+<script>
+    document.getElementById('avatar').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const statusElement = document.getElementById('uploadStatus');
+    
+    if (file) {
+        // Проверяем тип файла
+        const validTypes = ['image/jpeg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+            statusElement.textContent = 'Ошибка: допустимы только JPG или PNG';
+            statusElement.className = 'upload-status error';
+            return;
+        }
+        
+        // Проверяем размер файла (например, не более 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            statusElement.textContent = 'Ошибка: файл слишком большой (макс. 2MB)';
+            statusElement.className = 'upload-status error';
+            return;
+        }
+        
+        // Показываем успешное сообщение
+        statusElement.textContent = '✓ Файл успешно загружен: ' + file.name;
+        statusElement.className = 'upload-status success';
+        
+        // Показываем превью (как в предыдущем коде)
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatarPreview').innerHTML = 
+                `<img src="${e.target.result}" alt="Предпросмотр">`;
+        };
+        reader.readAsDataURL(file);
+        
+    } else {
+        statusElement.textContent = 'Файл не выбран';
+        statusElement.className = 'upload-status error';
+    }
+});
+</script>
+
 {% endblock %}
