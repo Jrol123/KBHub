@@ -1,46 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="user-profile">
-        <div class="user-info">
-            <span class="meta-author">
+    <div class="user-profile-info">
+        <div class="user-info-container">
+            <span class="user-avatar">
                 {% if user.avatar %}
                 <img src="{{ url_for('static', filename='img/' + user.avatar) }}" alt="{{ user.name }}" class="author-avatar">
                 {% endif %}
-                {{ user.name }}
             </span>
+            <div class="post-body">
+                <span class="user-name">{{ user.name }}</span>
+                <div>{{ user.bio }}</div>   <!--class="post-body"-->
+            </div>
         </div>
         {% if posts %}
             <div class="posts-container">
-            {% for post in posts %}
-            <div class="post-card">
-                <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
-                
-                {% if post.image %}
-                <div class="post-image-wrapper">
-                    <img src="{{ url_for('static', filename='img/' + post.image) }}" 
-                        alt="{{ post.title }}" 
-                        class="post-image"
-                        loading="lazy">
-                </div>
-                {% endif %}
-                
-                <div class="post-content-wrapper">
-                    <h2 class="post-title">{{ post.title }}</h2>
-                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                <span class="user-name" style="text-align: center;">Публикации</span>
+                {% for post in posts %}
+                <div class="post-card">
+                    <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
                     
-                    <div class="post-footer">
-                        <div class="post-meta-right">
-                            <span class="post-date">{{ post.date }}</span>
-                            <span class="reading-time">
-                                <i class="far fa-clock"></i> {{ post.reading_time }} мин
-                            </span>
+                    {% if post.image %}
+                    <div class="post-image-wrapper">
+                        <img src="{{ url_for('static', filename='img/' + post.image) }}" 
+                            alt="{{ post.title }}" 
+                            class="post-image"
+                            loading="lazy">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="post-content-wrapper">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                        <p class="post-excerpt">{{ post.excerpt }}</p>
+                        
+                        <div class="post-footer">
+                            <div class="post-meta-right">
+                                <span class="post-date">{{ post.date }}</span>
+                                <span class="reading-time">
+                                    <i class="far fa-clock"></i> {{ post.reading_time }} мин
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
         {% endif %}
     </div>
 {% endblock %}
