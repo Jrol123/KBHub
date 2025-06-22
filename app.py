@@ -143,7 +143,13 @@ def register():
 
             existing_email = User.query.filter_by(email=email).first()
             if existing_email:
-                return "Юзер с введенным емейлом уже существует, иди нахуй", 400
+                return render_template('registration.html', 
+                                     error="Email уже используется",
+                                     form_data={
+                                        'username': username,
+                                        'email': email,
+                                        'bio': bio
+                                    })
 
             filepath = None
 
@@ -170,9 +176,39 @@ def register():
     return render_template('registration.html')
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('registration.html')
+    if request.method == 'POST':
+        try:
+            email = request.form['email']
+            password = request.form['password']
+
+            def error_login_redir():
+                return render_template('login.html', 
+                                     error="Неверный email или пароль",
+                                     form_data={
+                                        'email': email
+                                    })
+
+            required_user = User.query.filter_by(email=email).first()
+            if not required_user:
+                return error_login_redir()
+            
+            elif required_user.password != password:
+                return error_login_redir()
+            
+            posts = Post.query.all()
+
+            return render_template(
+                'index.html', posts=posts,
+                authorized_user=required_user)
+
+        except Exception as e:
+            db.session.rollback()
+            return f"Error: {str(e)}", 500
+
+
+    return render_template('login.html')
 
 
 if __name__ == '__main__':

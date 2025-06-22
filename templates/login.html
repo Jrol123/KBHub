@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reg_styles.css') }}">
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block js %}{% endblock %}
+
+{% block content %}
+
+<div class="auth-card">
+    <form method="POST" action="{{ url_for('login') }}" enctype="multipart/form-data">
+
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" 
+                    value="{{ form_data.email if form_data else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+
+            {% if error %}
+                <div class="form-error">
+                    {{ error }}
+                </div>
+            {% endif %}
+            
+            <button type="submit" class="btn" style="margin-top: 20px;">Логин</button>
+        </form>
+
+        
+        <!-- <div class="auth-links">
+            Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a>
+        </div> -->
+    </form>
+</div>
+
+
+{% endblock %}
