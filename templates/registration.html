@@ -35,7 +35,7 @@
 
             <div class="avatar-upload">
                 <div class="avatar-preview" id="avatarPreview">
-                    <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="Аватар по умолчанию">
+                    <img src="{{ url_for('static', filename= app.config['DEFAULT_AVATAR']) }}" alt="Аватар по умолчанию">
                 </div>
                 <input type="file" id="avatar" name="avatar" accept="image/*">
                 <label for="avatar">Выбрать аватар</label>

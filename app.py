@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -6,10 +7,23 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'instance', 'posts.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'idi_nahui'
+app.config['DEFAULT_AVATAR'] = 'img/__MATHUB__DEFAULT__AVATAR__AANG__.png'
 db = SQLAlchemy(app)
 
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-class User(db.Model):
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.context_processor
+def inject_app_config():
+    return dict(app=app)
+
+
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
@@ -116,7 +130,7 @@ def init_db():
 @app.route('/')
 def index():
     posts = Post.query.all()
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts, current_user=current_user)
 
 
 @app.route('/post/<int:post_id>')
@@ -133,6 +147,10 @@ def user_profile(user_id):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         try:
             username = request.form['username']
@@ -157,6 +175,8 @@ def register():
                 if avatar.filename != '': 
                     filepath = f"upload/{avatar.filename}"
                     avatar.save(filepath)
+            else:
+                filepath = app.config['DEFAULT_AVATAR']
 
             new_user = User(
                 name=username,
@@ -180,6 +200,10 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         try:
             email = request.form['email']
@@ -199,11 +223,13 @@ def login():
             elif required_user.password != password:
                 return error_login_redir()
             
+            login_user(required_user, remember=True)
+
             posts = Post.query.all()
 
             return render_template(
                 'index.html', posts=posts,
-                authorized_user=required_user)
+                current_user=current_user)
 
         except Exception as e:
             db.session.rollback()
@@ -211,6 +237,13 @@ def login():
 
 
     return render_template('login.html')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
