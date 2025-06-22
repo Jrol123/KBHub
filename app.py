@@ -154,7 +154,9 @@ def register():
             filepath = None
 
             if avatar:
-                if avatar.filename != '': filepath = f"upload/{avatar.filename}"
+                if avatar.filename != '': 
+                    filepath = f"upload/{avatar.filename}"
+                    avatar.save(filepath)
 
             new_user = User(
                 name=username,
