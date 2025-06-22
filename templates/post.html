@@ -17,11 +17,16 @@
                     {% if post.author.avatar %}
                     <img src="{{ url_for('static', filename='img/' + post.author.avatar) }}" alt="{{ post.author.name }}" class="author-avatar">
                     {% endif %}
-                    <!-- <span>{{ post.author.name }}</span> -->
+                    <a href="{{ url_for('user_profile', user_id=post.author.id) }}" class="author-link">
+                        {{ post.author.name }}
+                    </a>
                 </span>
-                <span>{{ post.author.name }}</span>
-                <span class="meta-date">{{ post.date }}</span>
-                <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+                <!-- <span>{{ post.author.name }}</span> -->
+                <!-- <span class="meta-date">{{ post.date }}</span> -->
+                <div style="display: grid; align-items: center;">
+                    <span class="meta-date">{{ post.date }}</span>
+                    <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+                </div>
             </div>
             
             <div class="post-body">

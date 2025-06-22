@@ -267,14 +267,17 @@ body {
 .post-meta {
     display: flex;
     justify-content: space-between;
+    /* align-items: center; */
+    align-items: stretch;
     font-size: 0.85em;
     color: #757575;
     margin-top: auto;
+    height: 100px;
 }
 
 .author-avatar {
-    width: 80px;
-    height: 80px;
+    width: 42px;
+    height: 42px;
     flex-shrink: 0;
     border-radius: 50%;
     overflow: hidden;
@@ -283,14 +286,28 @@ body {
     box-shadow: 0 2px 6px rgba(255, 109, 0, 0.2);
 }
 
+.meta-author {
+    display: flex;
+    align-items: center;
+    font-size: large;
+    color:#e0e0e0;
+}
+
+.meta-author img {
+    margin-right: 16px;
+}
+
 .meta-date {
     font-style: italic;
+    text-align: right;
+    color: #b0b0b0;
 }
 
 .meta-reading-time {
     background-color: #252525;
     padding: 3px 10px;
     border-radius: 12px;
+    color: #ff8f00;
 }
 
 /* Адаптивность */
@@ -571,7 +588,7 @@ body {
 .post-body {
     margin-top: 15px;
     margin-left: 5%;
-    color: #b0b0b0;
+    color: #e0e0e0; /*#b0b0b0*/
     line-height: 1.6;
     font-size: 16px;
     max-width: 700px;
