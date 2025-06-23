@@ -184,20 +184,19 @@ def register():
 
             existing_email = User.query.filter_by(email=email).first()
             if existing_email:
-                return render_template('registration.html', 
-                                     error="Email уже используется",
-                                     form_data={
-                                        'username': username,
-                                        'email': email,
-                                        'bio': bio
-                                    })
+                return render_template(
+                    "registration.html",
+                    error="Email уже используется",
+                    form_data={"username": username, "email": email, "bio": bio},
+                )
 
             filepath = None
 
             if avatar:
                 if avatar.filename != '': 
-                    filepath = f"upload/avatar/{avatar.filename}"
-                    avatar.save(f"static/avatar/{filepath}")
+                    filepath = f"upload/avatars/{avatar.filename}"
+                    print(filepath)
+                    avatar.save(f"static/{filepath}")
             else:
                 filepath = app.config['DEFAULT_AVATAR']
 
@@ -213,11 +212,11 @@ def register():
             db.session.commit()
 
             return redirect(url_for('login'))
-            
+
         except Exception as e:
             db.session.rollback()
             return f"Error: {str(e)}", 500
-            
+
     return render_template('registration.html')
 
 
@@ -233,19 +232,19 @@ def login():
             password = request.form['password']
 
             def error_login_redir():
-                return render_template('login.html', 
-                                     error="Неверный email или пароль",
-                                     form_data={
-                                        'email': email
-                                    })
+                return render_template(
+                    "login.html",
+                    error="Неверный email или пароль",
+                    form_data={"email": email},
+                )
 
             required_user = User.query.filter_by(email=email).first()
             if not required_user:
                 return error_login_redir()
-            
+
             elif required_user.password != password:
                 return error_login_redir()
-            
+
             login_user(required_user, remember=True)
 
             posts = Post.query.all()
@@ -257,7 +256,6 @@ def login():
         except Exception as e:
             db.session.rollback()
             return f"Error: {str(e)}", 500
-
 
     return render_template('login.html')
 
