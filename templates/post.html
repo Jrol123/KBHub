@@ -6,7 +6,7 @@
     <div class="post-detail">
         {% if post.image %}
         <div class="post-image-container detail">
-            <img src="{{ url_for('static', filename='img/' + post.image) }}" alt="{{ post.title }}" class="post-image">
+            <img src="{{ url_for('static', filename= post.image) }}" alt="{{ post.title }}" class="post-image">
         </div>
         {% endif %}
         
@@ -15,12 +15,18 @@
             <div class="post-meta">
                 <span class="meta-author">
                     {% if post.author.avatar %}
-                    <img src="{{ url_for('static', filename='img/' + post.author.avatar) }}" alt="{{ post.author.name }}" class="author-avatar">
+                    <img src="{{ url_for('static', filename= post.author.avatar) }}" alt="{{ post.author.name }}" class="author-avatar">
                     {% endif %}
-                    {{ post.author.name }}
+                    <a href="{{ url_for('user_profile', user_id=post.author.id) }}" class="author-link">
+                        {{ post.author.name }}
+                    </a>
                 </span>
-                <span class="meta-date">{{ post.date }}</span>
-                <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+                <!-- <span>{{ post.author.name }}</span> -->
+                <!-- <span class="meta-date">{{ post.date }}</span> -->
+                <div style="display: grid; align-items: center;">
+                    <span class="meta-date">{{ post.date }}</span>
+                    <span class="meta-reading-time">{{ post.reading_time }} мин чтения</span>
+                </div>
             </div>
             
             <div class="post-body">

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_styles.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="user-profile-info">
+        <div class="user-info-container">
+            <span class="user-avatar">
+                {% if user.avatar %}
+                    <img src="{{ url_for('static', filename= user.avatar) }}" alt="{{ user.name }}" class="author-avatar">
+                <!-- {% else %} -->
+                    <!--  <img src="{{ url_for('static', filename= app.config['DEFAULT_AVATAR'])}}" alt="{{ user.name }}" class="author-avatar"> -->
+                {% endif %}
+            </span>
+            <div class="post-body">
+                <span class="user-name">{{ user.name }}</span>
+                <div>{{ user.bio }}</div>   <!--class="post-body"-->
+            </div>
+        </div>
+        
+        <div class="posts-container">
+            <span class="user-name" style="text-align: center;">Публикации</span>
+            {% if posts %}
+                {% for post in posts %}
+                <div class="post-card">
+                    <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
+                    
+                    {% if post.image %}
+                    <div class="post-image-wrapper">
+                        <img src="{{ url_for('static', filename= post.image) }}" 
+                            alt="{{ post.title }}" 
+                            class="post-image"
+                            loading="lazy">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="post-content-wrapper">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                        <p class="post-excerpt">{{ post.excerpt }}</p>
+                        
+                        <div class="post-footer">
+                            <div class="post-meta-right">
+                                <span class="post-date">{{ post.date }}</span>
+                                <span class="reading-time">
+                                    <i class="far fa-clock"></i> {{ post.reading_time }} мин
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p> Ничего пока не написано... </p>
+            {% endif %}
+        </div>
+        {% if current_user.is_authenticated and current_user.id == user.id %}
+            <div class="create-post-section">
+                <button id="showPostForm" class="btn btn-primary">Создать новый пост</button>
+                
+                <form id="postForm" method="POST" action="{{ url_for('create_post') }}" enctype="multipart/form-data" style="display:none;">
+                    <h3>Создать новый пост</h3>
+                    
+                    <div class="form-group">
+                        <label for="title">Заголовок</label>
+                        <input type="text" class="form-control" id="title" name="title" required maxlength="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="excerpt">Краткое описание</label>
+                        <textarea class="form-control" id="excerpt" name="excerpt" rows="2" required maxlength="150"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">Содержание</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image">Изображение (необязательно)</label>
+                        <div class="file-upload-wrapper">
+                            <button type="button" class="file-upload-button">
+                                <span class="file-icon">📁</span>
+                                <span>Выбрать файл</span>
+                            </button>
+                            <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                        </div>
+                        <span class="file-name-display" id="file-name">Файл не выбран</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reading_time">Время чтения (минуты)</label>
+                        <input type="number" class="form-control" id="reading_time" name="reading_time" min="1" max="120" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Опубликовать</button>
+                </form>
+            </div>
+
+            <script>
+                document.getElementById('showPostForm').addEventListener('click', function() {
+                    const form = document.getElementById('postForm');
+                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                });
+                document.getElementById('image').addEventListener('change', function(e) {
+                    const fileName = this.files.length ? this.files[0].name : 'Файл не выбран';
+                    document.getElementById('file-name').textContent = fileName;
+                });
+            </script>
+        {% endif %}        
+    </div>
+{% endblock %}

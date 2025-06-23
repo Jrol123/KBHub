@@ -8,7 +8,7 @@
             
             {% if post.image %}
             <div class="post-image-wrapper">
-                <img src="{{ url_for('static', filename='img/' + post.image) }}" 
+                <img src="{{ url_for('static', filename= post.image) }}" 
                      alt="{{ post.title }}" 
                      class="post-image"
                      loading="lazy">

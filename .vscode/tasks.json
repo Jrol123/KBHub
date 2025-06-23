@@ -28,6 +28,13 @@
             "detail": "Пересборка и запуск сервисов"
         },
         {
+            "label": "Docker: Compose Up (Rebuild + reDB)",
+            "type": "shell",
+            "command": "rm instance/posts.db && docker-compose up -d --build",
+            "problemMatcher": [],
+            "detail": "Пересборка и запуск сервисов + удаление БД"
+        },
+        {
             "label": "Docker: Compose Down",
             "type": "shell",
             "command": "docker-compose down",
