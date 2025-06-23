@@ -30,7 +30,7 @@
                     
                     {% if post.image %}
                     <div class="post-image-wrapper">
-                        <img src="{{ url_for('static', filename='img/' + post.image) }}" 
+                        <img src="{{ url_for('static', filename= post.image) }}" 
                             alt="{{ post.title }}" 
                             class="post-image"
                             loading="lazy">
@@ -80,7 +80,14 @@
                     
                     <div class="form-group">
                         <label for="image">Изображение (необязательно)</label>
-                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                        <div class="file-upload-wrapper">
+                            <button type="button" class="file-upload-button">
+                                <span class="file-icon">📁</span>
+                                <span>Выбрать файл</span>
+                            </button>
+                            <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                        </div>
+                        <span class="file-name-display" id="file-name">Файл не выбран</span>
                     </div>
                     
                     <div class="form-group">
@@ -96,6 +103,10 @@
                 document.getElementById('showPostForm').addEventListener('click', function() {
                     const form = document.getElementById('postForm');
                     form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                });
+                document.getElementById('image').addEventListener('change', function(e) {
+                    const fileName = this.files.length ? this.files[0].name : 'Файл не выбран';
+                    document.getElementById('file-name').textContent = fileName;
                 });
             </script>
         {% endif %}        
