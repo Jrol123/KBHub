@@ -5,7 +5,9 @@
         <div class="user-info-container">
             <span class="user-avatar">
                 {% if user.avatar %}
-                <img src="{{ url_for('static', filename='img/' + user.avatar) }}" alt="{{ user.name }}" class="author-avatar">
+                    <img src="{{ url_for('static', filename= user.avatar) }}" alt="{{ user.name }}" class="author-avatar">
+                <!-- {% else %} -->
+                    <!--  <img src="{{ url_for('static', filename= app.config['DEFAULT_AVATAR'])}}" alt="{{ user.name }}" class="author-avatar"> -->
                 {% endif %}
             </span>
             <div class="post-body">

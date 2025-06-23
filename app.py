@@ -175,7 +175,7 @@ def register():
             if avatar:
                 if avatar.filename != '': 
                     filepath = f"upload/{avatar.filename}"
-                    avatar.save(filepath)
+                    avatar.save(f"static/{filepath}")
             else:
                 filepath = app.config['DEFAULT_AVATAR']
 
@@ -254,6 +254,3 @@ if __name__ == '__main__':
             host='0.0.0.0',
             port=5000
             ) #  host='0.0.0.0', port=5000
-
-
-    
