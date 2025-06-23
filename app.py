@@ -10,7 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'instance', 'posts.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'idi_nahui'
-app.config['DEFAULT_AVATAR'] = 'img/__MATHUB__DEFAULT__AVATAR__AANG__.png'
+app.config['DEFAULT_AVATAR'] = 'default/__MATHUB__DEFAULT__AVATAR__AANG__.png'
 
 MONTHS_RU = {
     1: "января",
@@ -109,7 +109,7 @@ def init_db():
                         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
                         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</p>
                         """,
-                        image='post.jpg',
+                        image='upload/posts/post.jpg',
                         date='15 июня 2023',
                         reading_time=8,
                         author_id=users[0].id
@@ -196,8 +196,8 @@ def register():
 
             if avatar:
                 if avatar.filename != '': 
-                    filepath = f"upload/{avatar.filename}"
-                    avatar.save(f"static/{filepath}")
+                    filepath = f"upload/avatar/{avatar.filename}"
+                    avatar.save(f"static/avatar/{filepath}")
             else:
                 filepath = app.config['DEFAULT_AVATAR']
 
