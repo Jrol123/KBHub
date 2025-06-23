@@ -1,0 +1,98 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Docker: Build Web Image",
+            "type": "shell",
+            "command": "docker build -t kb-site-web .",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Сборка образа web-сервиса из Dockerfile"
+        },
+        {
+            "label": "Docker: Compose Up",
+            "type": "shell",
+            "command": "docker-compose up -d",
+            "problemMatcher": [],
+            "dependsOn": ["Docker: Build Web Image"],
+            "detail": "Запуск всех сервисов в фоновом режиме"
+        },
+        {
+            "label": "Docker: Compose Up (Rebuild)",
+            "type": "shell",
+            "command": "docker-compose up -d --build",
+            "problemMatcher": [],
+            "detail": "Пересборка и запуск сервисов"
+        },
+        {
+            "label": "Docker: Compose Down",
+            "type": "shell",
+            "command": "docker-compose down",
+            "problemMatcher": [],
+            "detail": "Остановка и удаление контейнеров"
+        },
+        {
+            "label": "Docker: Compose Down (Volumes)",
+            "type": "shell",
+            "command": "docker-compose down -v",
+            "problemMatcher": [],
+            "detail": "Остановка с удалением томов"
+        },
+        {
+            "label": "Docker: View Logs",
+            "type": "shell",
+            "command": "docker-compose logs -f",
+            "problemMatcher": [],
+            "detail": "Просмотр логов в реальном времени"
+        },
+        {
+            "label": "Docker: Web Terminal",
+            "type": "shell",
+            "command": "docker-compose exec web bash",
+            "problemMatcher": [],
+            "detail": "Открыть терминал в web-контейнере"
+        },
+        // {
+        //     "label": "Docker: DB Terminal",
+        //     "type": "shell",
+        //     "command": "docker-compose exec db mysql -u sergey -p2 siteDb",
+        //     "problemMatcher": [],
+        //     "detail": "Подключиться к MariaDB"
+        // },
+        {
+            "label": "Docker: Full Restart",
+            "type": "shell",
+            "command": "docker-compose down -v && docker-compose up -d --build",
+            "problemMatcher": [],
+            "detail": "Полная перезагрузка с очисткой"
+        },
+        {
+            "label": "Docker: Check Services",
+            "type": "shell",
+            "command": "docker-compose ps",
+            "problemMatcher": [],
+            "detail": "Показать статус контейнеров"
+        },
+        // {
+        //     "label": "Docker: Nginx Logs",
+        //     "type": "shell",
+        //     "command": "docker-compose logs -f nginx",
+        //     "problemMatcher": [],
+        //     "detail": "Логи Nginx WAF"
+        // },
+        // {
+        //     "label": "Docker: Test Website",
+        //     "type": "process",
+        //     "command": "open",
+        //     "args": ["http://localhost"],
+        //     "problemMatcher": [],
+        //     "detail": "Открыть сайт в браузере",
+        //     "options": {
+        //         "cwd": "${workspaceFolder}"
+        //     }
+        // }
+    ]
+}
