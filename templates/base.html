@@ -22,23 +22,23 @@
                 <li><a href="#">Авторы</a></li>
                 <li><a href="#">Поддержка</a></li>
             </ul>
-            
-            <div class="profile-dropdown">
-                <div class="avatar-container">
-                    {% if current_user.is_authenticated %}
+
+            {% if current_user.is_authenticated %}
+                <div class="profile-dropdown">
+                    <div class="avatar-container">
                         <img src="{{ url_for('static', filename= current_user.avatar) }}" alt="Аватар пользователя" class="profile-avatar" id="profileToggle">
-                    {% else %}
-                        <img src="{{ url_for('static', filename= app.config['DEFAULT_AVATAR']) }}" alt="Аватар пользователя" class="profile-avatar" id="profileToggle">
-                    {% endif %}
+                    </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" class="dropdown-item">Профиль</a>
+                        <a href="#" class="dropdown-item">Подписки</a>
+                        <a href="#" class="dropdown-item">Закладки</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('logout') }}" class="dropdown-item logout">Выйти</a>
+                    </div>
                 </div>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <a href="#" class="dropdown-item">Профиль</a>
-                    <a href="#" class="dropdown-item">Подписки</a>
-                    <a href="#" class="dropdown-item">Закладки</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="{{ url_for('logout') }}" class="dropdown-item logout">Выйти</a>
-                </div>
-            </div>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="dropdown-item login">Войти</a>
+            {% endif %}
     </nav>
     {% endblock %}
     
