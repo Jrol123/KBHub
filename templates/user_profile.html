@@ -13,9 +13,10 @@
                 <div>{{ user.bio }}</div>   <!--class="post-body"-->
             </div>
         </div>
-        {% if posts %}
-            <div class="posts-container">
-                <span class="user-name" style="text-align: center;">Публикации</span>
+        
+        <div class="posts-container">
+            <span class="user-name" style="text-align: center;">Публикации</span>
+            {% if posts %}
                 {% for post in posts %}
                 <div class="post-card">
                     <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
@@ -44,7 +45,10 @@
                     </div>
                 </div>
                 {% endfor %}
-            </div>
-        {% endif %}
+            {% else %}
+                <p> Ничего пока не написано... </p>
+            {% endif %}
+        </div>
+        
     </div>
 {% endblock %}
