@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required, UserMixin
 from flask_sqlalchemy import SQLAlchemy
+
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -9,6 +11,22 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'inst
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'idi_nahui'
 app.config['DEFAULT_AVATAR'] = 'img/__MATHUB__DEFAULT__AVATAR__AANG__.png'
+
+MONTHS_RU = {
+    1: "января",
+    2: "февраля",
+    3: "марта",
+    4: "апреля",
+    5: "мая",
+    6: "июня",
+    7: "июля",
+    8: "августа",
+    9: "сентября",
+    10: "октября",
+    11: "ноября",
+    12: "декабря",
+}
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
@@ -45,8 +63,12 @@ class Post(db.Model):
 
 
 def init_db():
-    if not os.path.exists(os.path.join(basedir, 'instance')):
-        os.makedirs(os.path.join(basedir, 'instance'))
+    os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
+
+    os.makedirs(os.path.join(app.root_path, 'static', 'upload', 'posts'), exist_ok=True)
+    os.makedirs(os.path.join(app.root_path, 'static', 'upload', 'avatars'), exist_ok=True)
+    
+    # ... остальной код инициализации ...
     
     with app.app_context():
         db.create_all()
@@ -245,6 +267,55 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/create_post', methods=['POST'])
+@login_required
+def create_post():
+    try:
+        # Получение данных из формы
+        title = request.form['title']
+        excerpt = request.form['excerpt']
+        content = request.form['content']
+        reading_time = int(request.form['reading_time'])
+        image_file = request.files.get('image')
+        
+        # Валидация данных
+        if len(title) > 50 or len(excerpt) > 150:
+            return "Превышена максимальная длина поля", 400
+        
+        # Обработка изображения
+        image_path = None
+        if image_file and image_file.filename != '':
+            filename = f"post_{datetime.now().strftime('%Y%m%d%H%M%S')}_{image_file.filename}"
+            filepath = os.path.join('upload', 'posts', filename)
+            os.makedirs(os.path.join(app.root_path, 'static', 'upload', 'posts'), exist_ok=True)
+            image_file.save(os.path.join(app.root_path, 'static', filepath))
+            image_path = filepath
+        
+        # Форматирование даты
+        today = datetime.now()
+        date_str = f"{today.day} {MONTHS_RU[today.month]} {today.year}"
+        
+        # Создание нового поста
+        new_post = Post(
+            title=title,
+            excerpt=excerpt,
+            content=content,
+            image=image_path,
+            date=date_str,
+            reading_time=reading_time,
+            author_id=current_user.id
+        )
+        
+        db.session.add(new_post)
+        db.session.commit()
+        
+        return redirect(url_for('user_profile', user_id=current_user.id))
+    
+    except Exception as e:
+        db.session.rollback()
+        return f"Ошибка при создании поста: {str(e)}", 500
 
 
 if __name__ == '__main__':

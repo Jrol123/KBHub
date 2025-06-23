@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form_styles.css') }}">
+{% endblock %}
+
 {% block content %}
     <div class="user-profile-info">
         <div class="user-info-container">
@@ -51,6 +56,48 @@
                 <p> Ничего пока не написано... </p>
             {% endif %}
         </div>
-        
+        {% if current_user.is_authenticated and current_user.id == user.id %}
+            <div class="create-post-section">
+                <button id="showPostForm" class="btn btn-primary">Создать новый пост</button>
+                
+                <form id="postForm" method="POST" action="{{ url_for('create_post') }}" enctype="multipart/form-data" style="display:none;">
+                    <h3>Создать новый пост</h3>
+                    
+                    <div class="form-group">
+                        <label for="title">Заголовок</label>
+                        <input type="text" class="form-control" id="title" name="title" required maxlength="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="excerpt">Краткое описание</label>
+                        <textarea class="form-control" id="excerpt" name="excerpt" rows="2" required maxlength="150"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">Содержание</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image">Изображение (необязательно)</label>
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reading_time">Время чтения (минуты)</label>
+                        <input type="number" class="form-control" id="reading_time" name="reading_time" min="1" max="120" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Опубликовать</button>
+                </form>
+            </div>
+
+            <script>
+                document.getElementById('showPostForm').addEventListener('click', function() {
+                    const form = document.getElementById('postForm');
+                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                });
+            </script>
+        {% endif %}        
     </div>
 {% endblock %}
