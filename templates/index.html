@@ -4,29 +4,29 @@
     <div class="posts-container">
         {% for post in posts %}
         <div class="post-card">
-            <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
+            <a href="{{ url_for('post', post_id=post['id']) }}" class="post-link-overlay"></a>
             
-            {% if post.image %}
+            {% if post['image'] %}
             <div class="post-image-wrapper">
-                <img src="{{ url_for('static', filename= post.image) }}" 
-                     alt="{{ post.title }}" 
+                <img src="{{ url_for('static', filename=post['image']) }}" 
+                     alt="{{ post['title'] }}" 
                      class="post-image"
                      loading="lazy">
             </div>
             {% endif %}
             
             <div class="post-content-wrapper">
-                <h2 class="post-title">{{ post.title }}</h2>
-                <p class="post-excerpt">{{ post.excerpt }}</p>
+                <h2 class="post-title">{{ post['title'] }}</h2>
+                <p class="post-excerpt">{{ post['excerpt'] }}</p>
                 
                 <div class="post-footer">
-                    <a href="{{ url_for('user_profile', user_id=post.author.id) }}" class="author-link">
-                        {{ post.author.name }}
+                    <a href="{{ url_for('user_profile', user_id=post['author_id']) }}" class="author-link">
+                        {{ post['author_name'] }}
                     </a>
                     <div class="post-meta-right">
-                        <span class="post-date">{{ post.date }}</span>
+                        <span class="post-date">{{ post['date'] }}</span>
                         <span class="reading-time">
-                            <i class="far fa-clock"></i> {{ post.reading_time }} мин
+                            <i class="far fa-clock"></i> {{ post['reading_time'] }} мин
                         </span>
                     </div>
                 </div>

@@ -9,13 +9,13 @@
     <div class="user-profile-info">
         <div class="user-info-container">
             <span class="user-avatar">
-                {% if user.avatar %}
-                    <img src="{{ url_for('static', filename= user.avatar) }}" alt="{{ user.name }}" class="author-avatar">
-                {% endif %}
+                <img src="{{ url_for('static', filename=user['avatar'] if user['avatar'] else app.config['DEFAULT_AVATAR']) }}" 
+                     alt="{{ user['name'] }}" 
+                     class="author-avatar">
             </span>
             <div class="post-body">
-                <span class="user-name">{{ user.name }}</span>
-                <div>{{ user.bio }}</div>   <!--class="post-body"-->
+                <span class="user-name">{{ user['name'] }}</span>
+                <div>{{ user['bio'] if user['bio'] else 'Нет информации' }}</div>
             </div>
         </div>
         
@@ -24,26 +24,26 @@
             {% if posts %}
                 {% for post in posts %}
                 <div class="post-card">
-                    <a href="{{ url_for('post', post_id=post.id) }}" class="post-link-overlay"></a>
+                    <a href="{{ url_for('post', post_id=post['id']) }}" class="post-link-overlay"></a>
                     
-                    {% if post.image %}
+                    {% if post['image'] %}
                     <div class="post-image-wrapper">
-                        <img src="{{ url_for('static', filename= post.image) }}" 
-                            alt="{{ post.title }}" 
+                        <img src="{{ url_for('static', filename=post['image']) }}" 
+                            alt="{{ post['title'] }}" 
                             class="post-image"
                             loading="lazy">
                     </div>
                     {% endif %}
                     
                     <div class="post-content-wrapper">
-                        <h2 class="post-title">{{ post.title }}</h2>
-                        <p class="post-excerpt">{{ post.excerpt }}</p>
+                        <h2 class="post-title">{{ post['title'] }}</h2>
+                        <p class="post-excerpt">{{ post['excerpt'] }}</p>
                         
                         <div class="post-footer">
                             <div class="post-meta-right">
-                                <span class="post-date">{{ post.date }}</span>
+                                <span class="post-date">{{ post['date'] }}</span>
                                 <span class="reading-time">
-                                    <i class="far fa-clock"></i> {{ post.reading_time }} мин
+                                    <i class="far fa-clock"></i> {{ post['reading_time'] }} мин
                                 </span>
                             </div>
                         </div>
@@ -51,10 +51,11 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <p> Ничего пока не написано... </p>
+                <p class="no-posts-message">Ничего пока не написано...</p>
             {% endif %}
         </div>
-        {% if current_user.is_authenticated and current_user.id == user.id %}
+        
+        {% if current_user.is_authenticated and current_user.id == user['id'] %}
             <div class="create-post-section">
                 <button id="showPostForm" class="btn btn-primary">Создать новый пост</button>
                 
@@ -94,14 +95,23 @@
                     </div>
                     
                     <button type="submit" class="btn btn-success">Опубликовать</button>
+                    <button type="button" id="cancelPost" class="btn btn-secondary">Отмена</button>
                 </form>
             </div>
 
             <script>
                 document.getElementById('showPostForm').addEventListener('click', function() {
-                    const form = document.getElementById('postForm');
-                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                    document.getElementById('postForm').style.display = 'block';
+                    this.style.display = 'none';
                 });
+                
+                document.getElementById('cancelPost').addEventListener('click', function() {
+                    document.getElementById('postForm').style.display = 'none';
+                    document.getElementById('showPostForm').style.display = 'block';
+                    document.getElementById('postForm').reset();
+                    document.getElementById('file-name').textContent = 'Файл не выбран';
+                });
+                
                 document.getElementById('image').addEventListener('change', function(e) {
                     const fileName = this.files.length ? this.files[0].name : 'Файл не выбран';
                     document.getElementById('file-name').textContent = fileName;

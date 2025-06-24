@@ -26,7 +26,10 @@
             {% if current_user.is_authenticated %}
                 <div class="profile-dropdown">
                     <div class="avatar-container">
-                        <img src="{{ url_for('static', filename= current_user.avatar) }}" alt="Аватар пользователя" class="profile-avatar" id="profileToggle">
+                        <img src="{{ url_for('static', filename=current_user.avatar if current_user.avatar else app.config['DEFAULT_AVATAR']) }}" 
+                             alt="Аватар пользователя" 
+                             class="profile-avatar" 
+                             id="profileToggle">
                     </div>
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="{{ url_for('user_profile', user_id=current_user.id) }}" class="dropdown-item">Профиль</a>
