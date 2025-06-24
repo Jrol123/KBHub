@@ -235,7 +235,15 @@ def register():
                                         'bio': bio
                                     })
 
-            filepath = app.config['DEFAULT_AVATAR']
+            filepath = None
+
+            if avatar:
+                if avatar.filename != '': 
+                    filepath = f"upload/avatars/{avatar.filename}"
+                    print(filepath)
+                    avatar.save(f"static/{filepath}")
+            else:
+                filepath = app.config['DEFAULT_AVATAR']
 
             if avatar and avatar.filename != '':
                 filepath = f"upload/avatars/{avatar.filename}"
@@ -249,10 +257,10 @@ def register():
             db.commit()
 
             return redirect(url_for('login'))
-            
+
         except Exception as e:
             return f"Error: {str(e)}", 500
-            
+
     return render_template('registration.html')
 
 
